@@ -28,11 +28,11 @@
   color: #007bff;
 }
 
-.table-container {
+/* .table-container {
   margin-top: 20px;
   border-collapse: collapse;
   width: 100%;
-}
+} */
 
 .table-header, .table-cell {
   padding: 12px 15px;

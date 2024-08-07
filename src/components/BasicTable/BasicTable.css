@@ -1,19 +1,25 @@
 *{
+    box-sizing: border-box;
  margin: 0;
     padding: 0;
 }
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    /* background-color: red; */
    
 }
 
 .table-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    padding:20px 0;
+    /* padding:20px 0; */
     background-color: #f4f4f4;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    overflow: hidden
 }
 
 .table-controls {

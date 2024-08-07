@@ -32,9 +32,11 @@ function App() {
 
   return (
     <>
-      <h1>Site List</h1>
       <div style={{maxHeight:"100%"}}>
-        <BasicTable data={tableData} columns={movieColumns} />
+        <BasicTable data={tableData} 
+        stickyHeader 
+        showPagination
+         columns={movieColumns} />
       </div>
     </>
     // <Table />
