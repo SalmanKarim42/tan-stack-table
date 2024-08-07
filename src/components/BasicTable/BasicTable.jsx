@@ -1,83 +1,21 @@
 import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  flexRender
 } from '@tanstack/react-table';
-import React, { useState } from 'react';
-import { FaBackward, FaFilter } from 'react-icons/fa';
+import { FaBackward } from 'react-icons/fa';
 import { IoIosFastforward } from 'react-icons/io';
-import { IoCaretBackOutline, IoCaretForward, IoClose } from 'react-icons/io5';
+import { IoCaretBackOutline, IoCaretForward } from 'react-icons/io5';
+import FilterIcon from '../FilterIcon/FilterIcon';
+import { useTable } from '../useTable';
 import './BasicTable.css';
 
 
-export default function BasicTable({ columns, data }) {
+export default function BasicTable({ columns, data ,...rest}) {
 
-  const [columnFilters, setColumnFilters] = useState({});
-  const [dropdownOpen, setDropdownOpen] = useState(false); 
-  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false); 
-  const [selectedHeader, setSelectedHeader] = useState(null); 
+  const table = useTable({
+    data, columns,
+    ...rest
+  })
 
-  // const filteredData = useMemo(() => {
-  //   return data.filter(row => {
-      
-  //     if (Object.keys(columnFilters).length > 0) {
-  //       return Object.entries(columnFilters).every(([columnId, selectedValues]) => {
-  //         return selectedValues.length === 0 || selectedValues.includes(row[columnId]);
-  //       });
-  //     }
-
-  //     return true;
-  //   });
-  // }, [data, columnFilters]);
-
-  const table = useReactTable({
-    data: data,
-    columns,
-    enableGlobalFilter: true,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getColumnCanGlobalFilter: column => column.id !== 'actions',
-    state: {
-      // sorting,
-      // globalFilter,
-    },
-    // onSortingChange: setSorting,
-    // onGlobalFilterChange: setGlobalFilter,
-  });
-
-  const handleHeaderClick = (header) => {
-    setSelectedHeader(header);
-    setDropdownOpen(false); 
-    setFilterDropdownOpen(true);
-  };
-
-  const handleFilterChange = (e, columnId) => {
-    const value = e.target.value;
-    setColumnFilters(prev => {
-      const currentValues = prev[columnId] || [];
-      if (e.target.checked) {
-        return {
-          ...prev,
-          [columnId]: [...currentValues, value],
-        };
-      } else {
-        return {
-          ...prev,
-          [columnId]: currentValues.filter(v => v !== value),
-        };
-      }
-    });
-  };
-
-  const closeDropdowns = () => {
-    setDropdownOpen(false);
-    setFilterDropdownOpen(false);
-  };
 
   return (
     <div className='table-container'>
@@ -90,53 +28,7 @@ export default function BasicTable({ columns, data }) {
           value={table.getState().globalFilter}
           onChange={e => table.setGlobalFilter(e.target.value)}
         />
-        <div>
-          <button className='filterIcon' onClick={() => setDropdownOpen(prev => !prev)}>
-            <FaFilter />
-          </button>
-          {dropdownOpen && (
-            <div className='dropdown-menu'>
-              <ul>
-                {table.getHeaderGroups().map(headerGroup => (
-                  headerGroup.headers.map(header => (
-                    <li key={header.id}>
-                      <div
-                        onClick={() => handleHeaderClick(header)}
-                      >
-                        {header.isPlaceholder ? null : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                      </div>
-                    </li>
-                  ))
-                ))}
-              </ul>
-            </div>
-          )}
-          {dropdownOpen && (
-            <button className='closeIcon' onClick={closeDropdowns}>
-              <IoClose />
-            </button>
-          )}
-          {filterDropdownOpen && selectedHeader && (
-            <div className='dropdown-menu'>
-              <ul>
-                {data.map((row, index) => (
-                  <li key={index}>
-                    <input
-                      type="checkbox"
-                      value={row[selectedHeader.column.id]}
-                      onChange={e => handleFilterChange(e, selectedHeader.column.id)}
-                      checked={(columnFilters[selectedHeader.column.id] || []).includes(row[selectedHeader.column.id])}
-                    />
-                    {row[selectedHeader.column.id]}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        <FilterIcon table={table} />
       </div>
       <table className='custom-table'>
         <thead>
@@ -153,8 +45,9 @@ export default function BasicTable({ columns, data }) {
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                 
                       {
-                        { asc: '🔼', desc: '🔽' }[
+                        { asc: '🔼', desc: '🔽' , false: " null"}[
                         header.column.getIsSorted() ?? null
                         ]
                       }
@@ -181,19 +74,19 @@ export default function BasicTable({ columns, data }) {
        
       <div style={{display:"flex"}}>
          <p>Row per page</p>
-        <select
-        className='Rows'
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            table.setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+          <select
+          className='Rows'
+            value={table.getState().pagination.pageSize}
+            onChange={e => {
+              table.setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 20, 30, 40, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
         </div>
         <span style={{display:"flex"}}>
           <div>Page</div>

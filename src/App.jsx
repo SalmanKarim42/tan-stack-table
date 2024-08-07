@@ -15,14 +15,17 @@ function App() {
     {
       header: 'Name',
       accessorKey: 'name',
+      filterFn: 'filterColumnByCheckbox',
     },
     {
       header: 'Genre',
       accessorKey: 'genre',
+      filterFn: 'filterColumnByCheckbox',
     },
     {
       header: 'Rating',
       accessorKey: 'rating',
+      filterFn: 'filterColumnByCheckbox',
     },
   ];
 
